@@ -3,413 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Clases y Grupos - MultiProfesor</title>
+  <title>Gestión de Clases y Grupos</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
       text-align: center;
       background-color: #f0f0f0;
       padding-top: 20px;
-      margin: 0;
-      /* Estilo base para fuente, ajustado para pantallas pequeñas */
-      font-size: 16px;
     }
-
-    h1, h2 {
+    h1 {
       color: #4CAF50;
     }
-
-    .container, .user-container {
+    .container {
       background-color: #ffffff;
+      padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      /* Ajustes para pantallas pequeñas */
-      padding: 15px;
-      margin: 10px auto; /* Centrar los contenedores */
-      width: 95%; /* Ajustar ancho */
-      /* display: inline-block;  Eliminado para usar flexbox o block por defecto */
-      vertical-align: top;
-      box-sizing: border-box; /* Asegurar que padding no afecte el ancho total */
+      display: inline-block;
+      margin: 10px;
+      width: 90%;
+      max-width: 600px;
     }
-
-    .app-content {
-        display: none; /* Oculto hasta que se establezca el profesor */
-        /* Añadimos Flexbox para pantallas grandes en media query */
-    }
-
     label {
       display: block;
       margin-top: 10px;
       font-weight: bold;
-      text-align: left;
-      margin-bottom: 5px; /* Añadir un pequeño margen debajo de las etiquetas */
     }
-
     input[type="text"], input[type="number"], select {
-      width: calc(100% - 20px); /* Ajuste para padding y borde */
+      width: calc(100% - 12px);
       padding: 8px;
       margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 4px;
       box-sizing: border-box;
-      font-size: 1em; /* Usar em para escalar con el tamaño de fuente base */
+      font-size: 14px;
     }
-
     button {
       background-color: #4CAF50;
       color: white;
       padding: 10px 20px;
       border: none;
-      font-size: 1em; /* Usar em */
+      font-size: 14px;
       cursor: pointer;
       border-radius: 8px;
       margin-top: 15px;
-      transition: background-color 0.3s ease; /* Transición suave al pasar el ratón */
     }
-
-    button:hover:not(:disabled) {
-        background-color: #45a049;
-    }
-
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
-
     .controls button {
       margin-right: 10px;
       background-color: #2196F3;
     }
-     .controls button:hover:not(:disabled) {
-        background-color: #0b7dda;
-    }
-
-
     .edit-btn, .delete-btn {
       margin-left: 10px;
-      font-size: 0.8em; /* Usar em */
+      font-size: 12px;
       padding: 3px 7px;
       border-radius: 4px;
-      margin-top: 0; /* Eliminar margen superior extra */
     }
-
     .edit-btn {
       background-color: #ffc107;
       color: #000;
     }
-     .edit-btn:hover:not(:disabled) {
-        background-color: #ffb300;
-    }
-
     .delete-btn {
       background-color: #e91e63;
     }
-    .delete-btn:hover:not(:disabled) {
-        background-color: #d81b60;
-    }
-
     .resultados {
-        margin-top:15px; /* Ajustar margen superior */
-        padding: 15px; /* Ajustar relleno */
+        margin-top:10px;
+        padding: 10px;
         border: 1px solid #ddd;
         background-color: #f9f9f9;
         min-height: 30px;
-        text-align: left;
-        border-radius: 4px;
     }
-    .resultados h3 {
-        margin-top: 0;
-        margin-bottom: 8px;
-        color: #333;
-        font-size: 1.1em; /* Usar em */
-    }
-    .resultados p {
-        margin: 4px 0;
-        font-size: 1em; /* Usar em */
-    }
-
-    #userManagementSection {
-        padding: 15px;
-        background-color: #e9e9e9;
-        border-bottom: 2px solid #4CAF50;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    #currentUserDisplay {
-        font-weight: bold;
-        margin-bottom: 10px;
-        font-size: 1.1em; /* Usar em */
-    }
-    #profesorNombreInput {
-        margin-right: 10px;
-        width: auto; /* Ajustar para que no ocupe todo el ancho */
-        display: inline-block;
-        max-width: 200px; /* Limitar ancho en pantallas pequeñas */
-    }
-
-    #profesorLogin label {
-        text-align: center;
-        display: inline-block; /* Alinear con el input */
-        margin-right: 5px;
-        margin-top: 0;
-    }
-     #profesorLogin input[type="text"] {
-         width: auto; /* Ajustar */
-         display: inline-block;
-         max-width: 200px;
-         margin-top: 0;
-     }
-     #profesorLogin button {
-         margin-top: 0;
-     }
-
-
-    #listaAlumnos {
-        list-style-type: none;
-        padding-left: 0;
-        text-align: left;
-        margin-top: 10px;
-    }
-    #listaAlumnos li {
-        background-color: #eef; /* Color de fondo suave para los elementos de la lista */
-        padding: 8px;
-        margin-bottom: 5px;
-        border-radius: 4px;
-        display: flex; /* Usar flexbox para alinear nombre y botones */
-        justify-content: space-between; /* Espacio entre el nombre y los botones */
-        align-items: center; /* Alinear verticalmente */
-        flex-wrap: wrap; /* Permitir que los elementos se envuelvan en pantallas muy pequeñas */
-    }
-
-    #listaAlumnos li span {
-        flex-grow: 1; /* Permitir que el nombre del alumno ocupe el espacio disponible */
-        margin-right: 10px; /* Espacio entre el nombre y los botones */
-        word-break: break-word; /* Romper palabras largas si es necesario */
-    }
-
-    .group-settings h2 {
-        margin-top: 20px;
-    }
-
-    .group-settings div {
-        display: flex; /* Usar flexbox para alinear los botones +/- y el input */
-        align-items: center;
-        justify-content: center; /* Centrar el grupo de controles */
-        margin-bottom: 10px;
-    }
-     .group-settings div input[type="number"] {
-         width: 60px;
-         text-align: center;
-         padding: 8px;
-         margin: 0 5px; /* Espacio entre botones e input */
-         flex-shrink: 0; /* Evitar que el input se encoja demasiado */
-     }
-     .group-settings div button {
-         padding: 8px 12px;
-         font-size: 1em; /* Usar em */
-         margin-top: 0; /* Eliminar margen superior extra */
-         flex-shrink: 0; /* Evitar que los botones se encojan */
-     }
-     .group-settings > button { /* Botón "Crear Grupos" */
-         width: auto; /* Ajustar ancho */
-         padding: 10px 20px;
-     }
-
-
-    .temporizador-container h2 {
-        margin-top: 20px;
-    }
-     #temporizador input[type="number"] {
-         width: 60px;
-         text-align: center;
-         padding: 8px;
-         margin: 0 5px;
-     }
-     .temporizador-controls button {
-         margin: 5px; /* Espacio entre los botones del temporizador */
-     }
-
-
-    /* --- Media Queries para Responsividad --- */
-
-    /* Pantallas medianas (e.g., tabletas, 768px y más) */
-    @media (min-width: 768px) {
-      body {
-        font-size: 17px;
-      }
-
-      .container, .user-container {
-        width: 85%; /* Ajustar ancho */
-        padding: 20px;
-      }
-
-       #profesorNombreInput {
-           max-width: 250px; /* Aumentar max-width en pantallas medianas */
-       }
-        #profesorLogin input[type="text"] {
-            max-width: 250px;
-        }
-    }
-
-    /* Pantallas grandes (e.g., escritorios, 1024px y más) */
-    @media (min-width: 1024px) {
-      body {
-        font-size: 18px;
-      }
-
-      .app-content {
-        display: flex; /* Usar flexbox para el diseño */
-        justify-content: center; /* Centrar los elementos flex */
-        align-items: flex-start; /* Alinear elementos al inicio */
-        flex-wrap: wrap; /* Permitir que los elementos se envuelvan si es necesario (aunque en 1024px deberían estar lado a lado) */
-      }
-
-      .container, .temporizador-container {
-        flex: 1; /* Permitir que los contenedores crezcan y se reduzcan */
-        margin: 10px; /* Mantener el espaciado */
-        min-width: 400px; /* Establecer un ancho mínimo */
-        max-width: 600px; /* Limitar el ancho máximo */
-      }
-
-      /* Ajustes específicos si quieres que estén lado a lado sin envolver demasiado pronto */
-      @media (min-width: 1200px) {
-           .container {
-               flex: 2; /* Dar más espacio al contenedor principal */
-           }
-           .temporizador-container {
-               flex: 1; /* Dar menos espacio al temporizador */
-               max-width: 400px; /* Limitar el ancho del temporizador */
-           }
-            .app-content {
-                flex-wrap: nowrap; /* Evitar que los elementos se envuelvan en pantallas muy anchas */
-            }
-      }
-
-
-      .container, .user-container {
-        width: auto; /* Permitir que flexbox controle el ancho */
-      }
-
-      #profesorNombreInput {
-          max-width: none; /* Eliminar límite de ancho */
-      }
-      #profesorLogin input[type="text"] {
-           max-width: none;
-       }
-
-    }
-
-    /* Estilos adicionales para mejorar la interfaz en diferentes tamaños */
-    #listaAlumnos li .edit-btn,
-    #listaAlumnos li .delete-btn {
-        margin-left: 5px; /* Reducir el margen entre los botones de editar/eliminar */
-    }
-
-     @media (max-width: 400px) {
-         #profesorLogin input[type="text"],
-         #profesorLogin button,
-         #profesorLogin label {
-             display: block; /* Apilar elementos en pantallas muy pequeñas */
-             margin: 5px auto;
-             width: 90%;
-         }
-         #profesorLogin label {
-             text-align: center;
-         }
-
-          #listaAlumnos li {
-              flex-direction: column; /* Apilar elementos de la lista en pantallas muy pequeñas */
-              align-items: flex-start; /* Alinear elementos a la izquierda */
-          }
-          #listaAlumnos li span {
-              margin-right: 0;
-              margin-bottom: 5px;
-          }
-     }
-
-
   </style>
 </head>
 <body>
+  <h1>Gestión de Clases y Grupos</h1>
+  <div class="container">
+    <h2>Gestión de Clase</h2>
+    <label for="nombreClase">Nombre de la Clase:</label>
+    <input type="text" id="nombreClase" placeholder="Ej: 3ºA">
+    <div class="controls">
+      <button id="btnCrearClase">Crear Clase</button>
+      <button id="btnGuardarClase">Guardar Clase</button>
+      <button id="btnCargarClase">Cargar Clase</button>
+      <button id="btnEliminarClase" style="background-color:#f44336;">Eliminar Clase</button>
+    </div>
+    <label for="seleccionarClase">Seleccionar Clase:</label>
+    <select id="seleccionarClase"></select>
+    <label for="nuevoAlumno">Añadir Alumno:</label>
+    <input type="text" id="nuevoAlumno" placeholder="Nombre del alumno">
+    <button id="btnAgregarAlumno">Añadir</button>
+    <h3>Lista de Alumnos:</h3>
+    <ul id="listaAlumnos"></ul>
 
-  <div id="userManagementSection">
-    <h2>Bienvenido/a</h2>
-    <div id="profesorLogin">
-      <label for="profesorNombreInput">Nombre del Profesor/a:</label>
-      <input type="text" id="profesorNombreInput" placeholder="Escribe tu nombre de usuario">
-      <button id="btnEstablecerProfesor">Acceder / Crear</button>
+    <div class="group-settings">
+      <h2>Creación de Grupos</h2>
+      <label for="cantidadAlumnos">Alumnos por grupo:</label>
+      <div style="display: inline-block;">
+        <button id="btnMenos">-</button>
+        <input type="number" id="cantidadAlumnos" min="2" max="10" value="2" style="width: 60px; text-align: center;">
+        <button id="btnMas">+</button>
+      </div>
+      <button id="btnCrearGrupos">Crear Grupos</button>
+      <div id="resultadoGrupos" class="resultados"></div>
     </div>
-    <div id="profesorInfo" style="display:none;">
-      <p id="currentUserDisplay"></p>
-      <button id="btnCambiarProfesor">Cambiar de Profesor/a</button>
-    </div>
+
+    <h2>Sorteo</h2>
+    <button id="btnSortear">Sortear Alumno</button>
+    <div id="resultadoSorteo" class="resultados"></div>
   </div>
 
-  <div class="app-content">
-    <div class="container">
-      <h1>Gestión de Clases y Grupos</h1> <h2>Gestión de Clase</h2>
-      <label for="nombreClase">Nombre de la Clase:</label>
-      <input type="text" id="nombreClase" placeholder="Ej: 3ºA">
-      <div class="controls">
-        <button id="btnCrearClase">Crear Clase</button>
-        <button id="btnGuardarClase">Guardar Datos</button>
-        <button id="btnEliminarClase" style="background-color:#f44336;">Eliminar Clase</button>
-      </div>
-      <label for="seleccionarClase">Seleccionar Clase:</label>
-      <select id="seleccionarClase"></select>
-      <label for="nuevoAlumno">Añadir Alumno:</label>
-      <input type="text" id="nuevoAlumno" placeholder="Nombre del alumno">
-      <button id="btnAgregarAlumno">Añadir</button>
-      <h3>Lista de Alumnos:</h3>
-      <ul id="listaAlumnos"></ul>
-
-      <div class="group-settings">
-        <h2>Creación de Grupos</h2>
-        <label for="cantidadAlumnos">Alumnos por grupo:</label>
-        <div> <button id="btnMenos">-</button>
-          <input type="number" id="cantidadAlumnos" min="1" max="99" value="2">
-          <button id="btnMas">+</button>
-        </div>
-        <button id="btnCrearGrupos">Crear Grupos</button>
-        <div id="resultadoGrupos" class="resultados"></div>
-      </div>
-
-      <h2>Sorteo</h2>
-      <button id="btnSortear">Sortear Alumno/s</button>
-      <div id="resultadoSorteo" class="resultados"></div>
+  <div class="temporizador-container container">
+    <h2>Temporizador</h2>
+    <div id="temporizador">
+      <input type="number" id="minutos" value="0" min="0" max="59"> :
+      <input type="number" id="segundos" value="30" min="0" max="59">
     </div>
-
-    <div class="temporizador-container container"> <h2>Temporizador</h2>
-      <div id="temporizador">
-        <input type="number" id="minutos" value="0" min="0" max="59"> :
-        <input type="number" id="segundos" value="30" min="0" max="59">
-      </div>
-      <div class="temporizador-controls">
-        <button id="btnIniciar">Iniciar</button>
-        <button id="btnParar" disabled>Parar</button>
-        <button id="btnReiniciar" class="restart">Reiniciar</button>
-      </div>
+    <div class="temporizador-controls">
+      <button id="btnIniciar">Iniciar</button>
+      <button id="btnParar" disabled>Parar</button>
+      <button id="btnReiniciar" class="restart">Reiniciar</button>
     </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // --- Variables globales de la aplicación ---
-      const alumnosPorClase = {}; // Objeto para las clases del profesor actual
-      let claseActual = '';
-      let gruposCreados = [];
-      let currentProfesor = null; // Nombre del profesor actual
-
-      // --- Elementos del DOM para gestión de profesor ---
-      const profesorLoginDiv = document.getElementById("profesorLogin");
-      const profesorInfoDiv = document.getElementById("profesorInfo");
-      const profesorNombreInput = document.getElementById("profesorNombreInput");
-      const btnEstablecerProfesor = document.getElementById("btnEstablecerProfesor");
-      const currentUserDisplay = document.getElementById("currentUserDisplay");
-      const btnCambiarProfesor = document.getElementById("btnCambiarProfesor");
-      const appContentDiv = document.querySelector(".app-content");
-
-      // --- Elementos del DOM de la aplicación principal ---
       const nombreClaseInput = document.getElementById("nombreClase");
       const seleccionarClaseSelect = document.getElementById("seleccionarClase");
       const nuevoAlumnoInput = document.getElementById("nuevoAlumno");
@@ -417,513 +137,41 @@
       const btnAgregarAlumno = document.getElementById("btnAgregarAlumno");
       const btnCrearClase = document.getElementById("btnCrearClase");
       const btnGuardarClase = document.getElementById("btnGuardarClase");
-      // const btnCargarClase = document.getElementById("btnCargarClase"); // Ya no se usa explícitamente
+      const btnCargarClase = document.getElementById("btnCargarClase");
       const btnEliminarClase = document.getElementById("btnEliminarClase");
       const btnCrearGrupos = document.getElementById("btnCrearGrupos");
       const btnSortear = document.getElementById("btnSortear");
       const resultadoSorteoDiv = document.getElementById("resultadoSorteo");
-      const resultadoGruposDiv = document.getElementById("resultadoGrupos");
+
+
+      const alumnosPorClase = {};
+      let claseActual = '';
 
       // Temporizador
+      let temporizadorInterval = null;
+      let tiempoRestante = 0;
+
       const minutosInput = document.getElementById("minutos");
       const segundosInput = document.getElementById("segundos");
       const btnIniciar = document.getElementById("btnIniciar");
       const btnParar = document.getElementById("btnParar");
       const btnReiniciar = document.getElementById("btnReiniciar");
-      let temporizadorInterval = null;
-      let tiempoRestante = 0;
+
+      // Alarma
+      // Intentemos con la URL original de Mixkit que suele ser más permisiva con el hotlinking
       const alarmaAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/988/988-preview.mp3');
+      // const alarmaAudio = new Audio('https://soundbible.com/mp3/Air%20Plane%20Ding-SoundBible.com-496729130.mp3');
+      
+      // Opcional: intentar precargar el audio
       alarmaAudio.preload = 'auto';
 
-      // --- Lógica de Gestión de Profesor ---
 
-      function normalizarNombreProfesor(nombre) {
-          // Eliminar espacios y convertir a minúsculas para una clave consistente
-          return nombre.trim().toLowerCase().replace(/\s+/g, '_');
-      }
-
-      btnEstablecerProfesor.onclick = function() {
-          const nombre = profesorNombreInput.value.trim();
-          if (nombre) {
-              const profesorKey = normalizarNombreProfesor(nombre);
-              if (!profesorKey) {
-                  alert("El nombre del profesor no puede estar vacío o ser solo espacios.");
-                  return;
-              }
-              currentProfesor = profesorKey;
-              localStorage.setItem('ultimoProfesorConectado', currentProfesor); // Guardar para la próxima vez
-              localStorage.setItem(`${currentProfesor}_displayName`, nombre); // Guardar el nombre legible
-
-              profesorLoginDiv.style.display = 'none';
-              currentUserDisplay.textContent = `Profesor/a: ${nombre}`; // Mostrar nombre original
-              profesorInfoDiv.style.display = 'block';
-              appContentDiv.style.display = 'flex'; // Usar flexbox para mostrar
-              profesorNombreInput.value = ''; // Limpiar input
-              cargarDatosDelProfesor();
-          } else {
-              alert("Por favor, introduce un nombre para el profesor/a.");
-          }
-      };
-
-      btnCambiarProfesor.onclick = function() {
-          if (confirm("¿Estás seguro de que quieres cambiar de profesor? Los cambios no guardados se perderán.")) {
-            currentProfesor = null;
-            localStorage.removeItem('ultimoProfesorConectado');
-            // No eliminamos el displayName del almacenamiento local, solo la referencia del "último conectado"
-
-            profesorLoginDiv.style.display = 'block';
-            profesorInfoDiv.style.display = 'none';
-            appContentDiv.style.display = 'none'; // Ocultar contenido de la app
-            resetearEstadoAplicacion();
-          }
-      };
-
-      function cargarDatosDelProfesor() {
-          resetearEstadoAplicacionParcial(); // Resetea listas y selecciones, pero no `alumnosPorClase` aún
-          if (!currentProfesor) return;
-
-          const dataKey = `${currentProfesor}_alumnosPorClaseData`;
-          const data = localStorage.getItem(dataKey);
-          if (data) {
-              try {
-                  const datosGuardados = JSON.parse(data);
-                  // Limpiar `alumnosPorClase` antes de cargar nuevos datos
-                  for (const key in alumnosPorClase) {
-                      delete alumnosPorClase[key];
-                  }
-                  Object.assign(alumnosPorClase, datosGuardados);
-                  // alert(`Datos de ${localStorage.getItem(`${currentProfesor}_displayName`) || currentProfesor} cargados.`);
-              } catch (e) {
-                  console.error("Error al parsear datos del profesor:", e);
-                  alert("Error al cargar los datos. Podrían estar corruptos.");
-                  // Limpiar `alumnosPorClase` en caso de error
-                  for (const key in alumnosPorClase) {
-                      delete alumnosPorClase[key];
-                  }
-              }
-          } else {
-              // alert(`No se encontraron datos para ${localStorage.getItem(`${currentProfesor}_displayName`) || currentProfesor}. Puedes empezar a crear clases.`);
-              // Asegurarse de que `alumnosPorClase` esté vacío si no hay datos
-              for (const key in alumnosPorClase) {
-                  delete alumnosPorClase[key];
-              }
-          }
-          actualizarSelectorClases(); // Esto también llamará a mostrarAlumnosDeClase si hay una claseActual
-          // No hay claseActual al inicio, el selector mostrará "Seleccionar Clase"
-      }
-
-      function guardarDatosDelProfesor() {
-          if (!currentProfesor) {
-              alert("No hay un profesor seleccionado para guardar los datos.");
-              return false;
-          }
-          // No pedimos confirmación si no hay clases, simplemente guardamos el estado actual (vacío o con datos)
-          const dataKey = `${currentProfesor}_alumnosPorClaseData`;
-          localStorage.setItem(dataKey, JSON.stringify(alumnosPorClase));
-          alert(`Datos guardados para el profesor/a ${localStorage.getItem(`${currentProfesor}_displayName`) || currentProfesor}.`);
-          return true;
-
-      }
-
-      function resetearEstadoAplicacion() {
-          resetearEstadoAplicacionParcial();
-          for (const key in alumnosPorClase) {
-            delete alumnosPorClase[key];
-          }
-          currentProfesor = null;
-      }
-
-      function resetearEstadoAplicacionParcial() {
-        claseActual = '';
-        gruposCreados = [];
-        listaAlumnosUL.innerHTML = '';
-        seleccionarClaseSelect.innerHTML = ''; // Limpiar selector también
-        resultadoGruposDiv.innerHTML = '';
-        resultadoSorteoDiv.textContent = '';
-        nombreClaseInput.value = '';
-        nuevoAlumnoInput.value = '';
-         // Resetear temporizador
-        clearInterval(temporizadorInterval);
-        temporizadorInterval = null;
-        tiempoRestante = 0;
-        minutosInput.value = "00";
-        segundosInput.value = "30";
-        btnIniciar.disabled = false;
-        btnParar.disabled = true;
-        btnReiniciar.disabled = true;
-      }
-
-      // Inicialización al cargar la página
-      function init() {
-          const ultimoProfesor = localStorage.getItem('ultimoProfesorConectado');
-
-          if (ultimoProfesor) {
-              const nombreOriginal = localStorage.getItem(`${ultimoProfesor}_displayName`);
-
-              currentProfesor = ultimoProfesor;
-              profesorLoginDiv.style.display = 'none';
-              currentUserDisplay.textContent = `Profesor/a: ${nombreOriginal || currentProfesor}`; // Muestra el nombre legible o la clave
-              profesorInfoDiv.style.display = 'block';
-              appContentDiv.style.display = 'flex'; // Mostrar como flexbox
-              cargarDatosDelProfesor();
-          } else {
-              appContentDiv.style.display = 'none'; // Asegurarse que esté oculto
-              profesorLoginDiv.style.display = 'block';
-              profesorInfoDiv.style.display = 'none';
-          }
-      }
-
-      // --- Lógica de la Aplicación Principal (modificada para usar datos del profesor) ---
-
-      btnGuardarClase.onclick = function () { // Ahora es "Guardar Datos"
-        guardarDatosDelProfesor();
-      };
-
-      // btnCargarClase ya no es necesario con la carga automática por profesor.
-      // Si se quisiera un refresh manual, se podría llamar a cargarDatosDelProfesor()
-
-      function actualizarSelectorClases() {
-        seleccionarClaseSelect.innerHTML = '';
-        const defaultOption = document.createElement('option');
-        defaultOption.textContent = 'Seleccionar Clase';
-        defaultOption.disabled = true;
-        defaultOption.selected = true; // Siempre seleccionar por defecto al actualizar
-        seleccionarClaseSelect.appendChild(defaultOption);
-
-        // Iterar sobre `alumnosPorClase` que ahora pertenece al profesor actual
-        const clasesNombres = Object.keys(alumnosPorClase).sort(); // Opcional: ordenar clases alfabéticamente
-        clasesNombres.forEach(clase => {
-          const option = document.createElement('option');
-          const numAlumnos = alumnosPorClase[clase] ? alumnosPorClase[clase].length : 0;
-          option.value = clase;
-          option.textContent = `${clase} (${numAlumnos} alumnos)`;
-          seleccionarClaseSelect.appendChild(option);
-        });
-
-        // Si la claseActual todavía existe después de actualizar el selector, seleccionarla
-        if (claseActual && alumnosPorClase[claseActual]) {
-          seleccionarClaseSelect.value = claseActual;
-          mostrarAlumnosDeClase(claseActual);
-        } else {
-            // Si la clase actual ya no existe o no había una, limpiar la lista de alumnos
-            claseActual = '';
-            listaAlumnosUL.innerHTML = '';
-             resultadoGruposDiv.innerHTML = "";
-            gruposCreados = [];
-            resultadoSorteoDiv.textContent = '';
-        }
-      }
-
-
-      function mostrarAlumnosDeClase(clase) {
-        listaAlumnosUL.innerHTML = '';
-        if (clase && alumnosPorClase[clase]) {
-            alumnosPorClase[clase].forEach((alumno, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span>${alumno}</span>
-                <div> <button class="edit-btn" onclick="editarAlumno(${index})">Editar</button>
-                    <button class="delete-btn" onclick="eliminarAlumno(${index})">Eliminar</button>
-                </div>
-            `;
-            listaAlumnosUL.appendChild(li);
-            });
-        }
-      }
-
-      window.editarAlumno = function(index) {
-        if (!currentProfesor || !claseActual || !alumnosPorClase[claseActual]) return;
-        const alumnoActualNombre = alumnosPorClase[claseActual][index];
-        const nuevoNombre = prompt("Editar nombre del alumno:", alumnoActualNombre);
-        if (nuevoNombre !== null && nuevoNombre.trim() !== '' && nuevoNombre.trim() !== alumnoActualNombre) {
-          alumnosPorClase[claseActual][index] = nuevoNombre.trim();
-          mostrarAlumnosDeClase(claseActual);
-          // Considerar auto-guardado o marcar como "cambios sin guardar"
-        }
-      }
-
-      window.eliminarAlumno = function(index) {
-        if (!currentProfesor || !claseActual || !alumnosPorClase[claseActual]) return;
-        if (confirm("¿Eliminar este alumno?")) {
-          alumnosPorClase[claseActual].splice(index, 1);
-          mostrarAlumnosDeClase(claseActual);
-          actualizarSelectorClases();
-          resultadoGruposDiv.innerHTML = "";
-          gruposCreados = [];
-          resultadoSorteoDiv.textContent = '';
-          // Considerar auto-guardado o marcar como "cambios sin guardar"
-        }
-      }
-
-      btnCrearClase.onclick = () => {
-        if (!currentProfesor) { alert("Selecciona un profesor primero."); return; }
-        const nombreClase = nombreClaseInput.value.trim();
-        if (nombreClase) {
-            if (!alumnosPorClase[nombreClase]) {
-                alumnosPorClase[nombreClase] = [];
-                claseActual = nombreClase;
-                nombreClaseInput.value = '';
-                actualizarSelectorClases();
-                seleccionarClaseSelect.value = claseActual;
-                listaAlumnosUL.innerHTML = ''; // Limpiar la lista de alumnos al crear una clase nueva
-                resultadoGruposDiv.innerHTML = "";
-                gruposCreados = [];
-                resultadoSorteoDiv.textContent = '';
-                // Considerar auto-guardado o marcar como "cambios sin guardar"
-            } else {
-                alert("Esa clase ya existe para este profesor. Selecciona un nombre diferente.");
-            }
-        } else {
-            alert("Por favor, introduce un nombre para la clase.");
-        }
-      };
-
-      seleccionarClaseSelect.onchange = function () {
-        if (!currentProfesor) return;
-        claseActual = this.value;
-        mostrarAlumnosDeClase(claseActual);
-        resultadoSorteoDiv.textContent = '';
-        resultadoGruposDiv.innerHTML = "";
-        gruposCreados = [];
-      };
-
-      function agregarAlumno() {
-        if (!currentProfesor) { alert("Selecciona un profesor primero."); return; }
-        const alumno = nuevoAlumnoInput.value.trim();
-        if (claseActual && alumnosPorClase[claseActual]) {
-            if (alumno) {
-                // Evitar añadir alumnos duplicados (opcional)
-                if (alumnosPorClase[claseActual].includes(alumno)) {
-                    alert(`El alumno "${alumno}" ya existe en esta clase.`);
-                    nuevoAlumnoInput.value = '';
-                    nuevoAlumnoInput.focus();
-                    return;
-                }
-                alumnosPorClase[claseActual].push(alumno);
-                nuevoAlumnoInput.value = '';
-                mostrarAlumnosDeClase(claseActual);
-                actualizarSelectorClases();
-                resultadoGruposDiv.innerHTML = "";
-                gruposCreados = [];
-                resultadoSorteoDiv.textContent = '';
-                 // Considerar auto-guardado o marcar como "cambios sin guardar"
-            } else {
-                 alert("Por favor, introduce el nombre del alumno.");
-            }
-        } else {
-            alert("Por favor, crea o selecciona una clase primero.");
-        }
-        nuevoAlumnoInput.focus();
-      }
-
-      btnAgregarAlumno.onclick = agregarAlumno;
-
-      nuevoAlumnoInput.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-          event.preventDefault();
-          agregarAlumno();
-        }
-      });
-
-      btnEliminarClase.onclick = function () {
-        if (!currentProfesor || !claseActual || !alumnosPorClase[claseActual]) {
-            alert('Por favor, selecciona un profesor y una clase para eliminar.');
-            return;
-        }
-        if (confirm(`¿Deseas eliminar la clase "${claseActual}" con todos sus alumnos para el profesor ${localStorage.getItem(`${currentProfesor}_displayName`) || currentProfesor}?`)) {
-          delete alumnosPorClase[claseActual];
-          const nombreClaseEliminada = claseActual;
-          claseActual = '';
-          actualizarSelectorClases();
-          listaAlumnosUL.innerHTML = '';
-          resultadoSorteoDiv.textContent = '';
-          resultadoGruposDiv.innerHTML = "";
-          gruposCreados = [];
-          alert(`Clase "${nombreClaseEliminada}" eliminada.`);
-          // Considerar auto-guardado o marcar como "cambios sin guardar"
-        }
-      };
-
-      function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array; // Devolver el array mezclado
-      }
-
-      btnCrearGrupos.onclick = function () {
-        if (!currentProfesor || !claseActual || !alumnosPorClase[claseActual] || alumnosPorClase[claseActual].length === 0) {
-          alert("Asegúrate de seleccionar un profesor, una clase con alumnos antes de crear los grupos.");
-          return;
-        }
-
-        gruposCreados = [];
-        resultadoGruposDiv.innerHTML = "";
-        resultadoSorteoDiv.innerHTML = '';
-
-        let alumnosParaGrupos = [...alumnosPorClase[claseActual]];
-        shuffleArray(alumnosParaGrupos);
-        const alumnosPorGrupoInput = document.getElementById("cantidadAlumnos");
-        const alumnosPorGrupo = parseInt(alumnosPorGrupoInput.value);
-
-        if (isNaN(alumnosPorGrupo) || alumnosPorGrupo <= 0) {
-          alert("El número de alumnos por grupo debe ser un número mayor que cero.");
-          document.getElementById("cantidadAlumnos").value = 1; // Restablecer a 1
-          return;
-        }
-         if (alumnosPorGrupo > alumnosParaGrupos.length) {
-             alert(`El número de alumnos por grupo (${alumnosPorGrupo}) es mayor que el total de alumnos en la clase (${alumnosParaGrupos.length}).`);
-             document.getElementById("cantidadAlumnos").value = alumnosParaGrupos.length > 0 ? alumnosParaGrupos.length : 1; // Restablecer al total o 1
-             return;
-         }
-
-
-        const gruposLocales = [];
-        for (let i = 0; i < alumnosParaGrupos.length; i += alumnosPorGrupo) {
-          gruposLocales.push(alumnosParaGrupos.slice(i, i + alumnosPorGrupo));
-        }
-
-        if (gruposLocales.length > 0 && gruposLocales.some(g => g.length > 0)) {
-          mostrarGrupos(gruposLocales);
-          gruposCreados = gruposLocales;
-        } else {
-          resultadoGruposDiv.textContent = "No se pudieron formar grupos con los criterios actuales.";
-        }
-      };
-
-      function mostrarGrupos(grupos) {
-        resultadoGruposDiv.innerHTML = "";
-        if (grupos.length === 0 || !grupos.some(g => g.length > 0)) {
-            resultadoGruposDiv.textContent = "No hay suficientes alumnos o los grupos resultantes estarían vacíos.";
-            return;
-        }
-        grupos.forEach((grupo, index) => {
-          const divGrupo = document.createElement('div');
-          divGrupo.style.padding = "5px 0";
-           divGrupo.style.borderBottom = "1px dashed #ccc"; /* Separador visual */
-           if (index === grupos.length -1) {
-               divGrupo.style.borderBottom = "none"; /* Eliminar separador del último grupo */
-           }
-
-          if (grupo.length > 0) {
-            divGrupo.innerHTML = `<strong>Grupo ${index + 1}:</strong> ${grupo.join(', ')}`;
-          } else {
-            divGrupo.innerHTML = `<strong>Grupo ${index + 1}:</strong> (Vacío)`;
-          }
-          resultadoGruposDiv.appendChild(divGrupo);
-        });
-      }
-
-      btnSortear.onclick = function() {
-        if (!currentProfesor || !claseActual || !alumnosPorClase[claseActual]) {
-          alert("Por favor, selecciona un profesor y una clase.");
-          return;
-        }
-
-        resultadoSorteoDiv.innerHTML = '';
-        const alumnosDeClase = alumnosPorClase[claseActual];
-        if (alumnosDeClase.length === 0) {
-            alert("No hay alumnos en la clase seleccionada para sortear.");
-            return;
-        }
-
-        if (gruposCreados && gruposCreados.length > 0 && gruposCreados.some(g => g.length > 0)) {
-          let seSorteoAlguienEnGrupos = false;
-          resultadoSorteoDiv.innerHTML = '<h3>Sorteo por Grupos:</h3>';
-
-          gruposCreados.forEach((grupo, index) => {
-            const p = document.createElement('p');
-            if (grupo && grupo.length > 0) {
-              const indiceAleatorioEnGrupo = Math.floor(Math.random() * grupo.length);
-              const alumnoSorteadoDelGrupo = grupo[indiceAleatorioEnGrupo];
-              p.innerHTML = `<strong>Grupo ${index + 1}:</strong> ${alumnoSorteadoDelGrupo}`;
-              seSorteoAlguienEnGrupos = true;
-            } else {
-              p.innerHTML = `<strong>Grupo ${index + 1}:</strong> (Vacío, no se puede sortear)`;
-            }
-            resultadoSorteoDiv.appendChild(p);
-          });
-
-          if (!seSorteoAlguienEnGrupos && gruposCreados.length > 0) {
-              const p = document.createElement('p');
-              p.textContent = "Todos los grupos están vacíos. No se pudo sortear por grupo.";
-              resultadoSorteoDiv.appendChild(p);
-          }
-        } else {
-          const indiceAleatorio = Math.floor(Math.random() * alumnosDeClase.length);
-          const alumnoSorteado = alumnosDeClase[indiceAleatorio];
-          let mensajeSorteo = `<h3>Sorteo General:</h3><p><strong>Alumno sorteado:</strong> ${alumnoSorteado}</p>`;
-          if (gruposCreados && gruposCreados.length > 0 && !gruposCreados.some(g => g.length > 0)){
-            mensajeSorteo += "<p style='font-size:0.9em; margin-top:5px;'>(Se intentó crear grupos, pero resultaron vacíos. Se realizó un sorteo general.)</p>";
-          } else if (!gruposCreados || gruposCreados.length === 0) {
-            mensajeSorteo += "<p style='font-size:0.9em; margin-top:5px;'>(No se habían creado grupos, se realizó un sorteo general.)</p>";
-          }
-          resultadoSorteoDiv.innerHTML = mensajeSorteo;
-        }
-      };
-
-      document.getElementById("btnMas").onclick = function() {
-        const cantidadAlumnosInput = document.getElementById("cantidadAlumnos");
-        let valorActual = parseInt(cantidadAlumnosInput.value);
-        if (isNaN(valorActual)) valorActual = 0;
-        const maxAlumnos = (claseActual && alumnosPorClase[claseActual]) ? alumnosPorClase[claseActual].length : 99; // Límite basado en alumnos o 99 si no hay clase/alumnos
-        if (valorActual < 99 && valorActual < maxAlumnos) {
-             cantidadAlumnosInput.value = valorActual + 1;
-        } else if (valorActual < 99 && maxAlumnos === 0) { // Si no hay alumnos, permitir hasta 99
-             cantidadAlumnosInput.value = valorActual + 1;
-        } else if (valorActual >= 99) {
-            cantidadAlumnosInput.value = 99; // No exceder 99
-        } else if (valorActual >= maxAlumnos && maxAlumnos > 0) {
-             cantidadAlumnosInput.value = maxAlumnos; // No exceder el número de alumnos
-        }
-      };
-
-      document.getElementById("btnMenos").onclick = function() {
-        const cantidadAlumnosInput = document.getElementById("cantidadAlumnos");
-        let valorActual = parseInt(cantidadAlumnosInput.value);
-        if (isNaN(valorActual)) valorActual = 2;
-        if (valorActual > 1) {
-          cantidadAlumnosInput.value = valorActual - 1;
-        }
-      };
-
-      // Asegurarse de que la cantidad de alumnos por grupo no exceda el total al seleccionar clase
-      seleccionarClaseSelect.addEventListener('change', function() {
-          const claseSeleccionada = this.value;
-          if (claseSeleccionada && alumnosPorClase[claseSeleccionada]) {
-              const totalAlumnos = alumnosPorClase[claseSeleccionada].length;
-              const cantidadAlumnosInput = document.getElementById("cantidadAlumnos");
-              let valorActual = parseInt(cantidadAlumnosInput.value);
-              if (isNaN(valorActual) || valorActual > totalAlumnos) {
-                   cantidadAlumnosInput.value = totalAlumnos > 0 ? totalAlumnos : 1;
-              }
-               if (parseInt(cantidadAlumnosInput.value) === 0 && totalAlumnos > 0) {
-                   cantidadAlumnosInput.value = totalAlumnos;
-               } else if (parseInt(cantidadAlumnosInput.value) === 0 && totalAlumnos === 0) {
-                   cantidadAlumnosInput.value = 1;
-               }
-
-          } else {
-               document.getElementById("cantidadAlumnos").value = 1; // Resetear si no hay clase o alumnos
-          }
-      });
-
-      // --- Lógica del Temporizador ---
       function actualizarTemporizador() {
         const minutos = Math.floor(tiempoRestante / 60);
         const segundos = tiempoRestante % 60;
         minutosInput.value = String(minutos).padStart(2, '0');
         segundosInput.value = String(segundos).padStart(2, '0');
       }
-
-       function detenerTemporizador() {
-           clearInterval(temporizadorInterval);
-           temporizadorInterval = null;
-           btnIniciar.disabled = false;
-           btnParar.disabled = true;
-       }
-
 
       btnIniciar.onclick = function () {
         tiempoRestante = parseInt(minutosInput.value) * 60 + parseInt(segundosInput.value);
@@ -935,66 +183,274 @@
         btnParar.disabled = false;
         btnReiniciar.disabled = false;
 
+        // Opcional: cargar el audio aquí si no se precargó antes,
+        // para asegurar que la "interacción del usuario" está más cerca de la carga.
+        // alarmaAudio.load(); 
+
         temporizadorInterval = setInterval(function () {
           if (tiempoRestante > 0) {
             tiempoRestante--;
             actualizarTemporizador();
           } else {
-            detenerTemporizador(); // Detener el intervalo
-            console.log("Intentando reproducir sonido de alarma...");
+            clearInterval(temporizadorInterval);
+            temporizadorInterval = null;
+            
+            console.log("Intentando reproducir sonido de alarma..."); // Mensaje para depuración
             const playPromise = alarmaAudio.play();
 
             if (playPromise !== undefined) {
               playPromise.then(_ => {
+                // La reproducción automática comenzó bien
                 console.log("Sonido de alarma reproducido exitosamente.");
                 alert("El tiempo ha terminado.");
               }).catch(error => {
+                // La reproducción automática fue prevenida o falló.
                 console.error("Error al reproducir el sonido de la alarma:", error);
-                alert("El tiempo ha terminado. (No se pudo reproducir el sonido de la alarma. Revisa permisos o consola.)");
+                // Mostrar un mensaje al usuario que puede ser más útil.
+                alert("El tiempo ha terminado. (No se pudo reproducir el sonido de la alarma. Por favor, revisa los permisos de sonido de tu navegador para este sitio o la consola para más detalles.)");
               });
             } else {
+                // Fallback para navegadores muy antiguos que no devuelven una promesa de play()
+                // o si playPromise es undefined por alguna razón.
                 alert("El tiempo ha terminado. (Sonido no pudo iniciarse)");
             }
+            
+            btnIniciar.disabled = false;
+            btnParar.disabled = true;
           }
         }, 1000);
       };
 
       btnParar.onclick = function () {
-        detenerTemporizador(); // Reutilizar la función detener
+        clearInterval(temporizadorInterval);
+        temporizadorInterval = null;
+        btnIniciar.disabled = false;
+        btnParar.disabled = true;
       };
 
       btnReiniciar.onclick = function () {
-        detenerTemporizador(); // Detener si está corriendo
+        clearInterval(temporizadorInterval);
+        temporizadorInterval = null;
         tiempoRestante = 0;
         minutosInput.value = "00";
-        segundosInput.value = "30";
+        segundosInput.value = "30"; 
         btnIniciar.disabled = false;
         btnParar.disabled = true;
         btnReiniciar.disabled = true;
-         if (!alarmaAudio.paused) { // Si la alarma está sonando, detenerla
-             alarmaAudio.pause();
-             alarmaAudio.currentTime = 0; // Reiniciar el audio
-         }
       };
 
-      // Añadir eventos input para validar los campos del temporizador
-      minutosInput.addEventListener('input', function() {
-          let value = parseInt(this.value);
-          if (isNaN(value) || value < 0) this.value = 0;
-          if (value > 59) this.value = 59;
-          this.value = String(this.value).padStart(2, '0');
+      function actualizarSelectorClases() {
+        seleccionarClaseSelect.innerHTML = '';
+        const defaultOption = document.createElement('option');
+        defaultOption.textContent = 'Seleccionar Clase';
+        defaultOption.disabled = true;
+        defaultOption.selected = !claseActual; 
+        seleccionarClaseSelect.appendChild(defaultOption);
+
+        for (const clase in alumnosPorClase) {
+          const option = document.createElement('option');
+          const numAlumnos = alumnosPorClase[clase].length;
+          option.value = clase;
+          option.textContent = `${clase} (${numAlumnos} alumnos)`;
+          seleccionarClaseSelect.appendChild(option);
+        }
+        if (claseActual && alumnosPorClase[claseActual]) {
+          seleccionarClaseSelect.value = claseActual;
+        }
+         mostrarAlumnosDeClase(claseActual);
+      }
+
+      function mostrarAlumnosDeClase(clase) {
+        listaAlumnosUL.innerHTML = '';
+        if (clase && alumnosPorClase[clase]) {
+            alumnosPorClase[clase].forEach((alumno, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${alumno}</span>
+                <button class="edit-btn" onclick="editarAlumno(${index})">Editar</button>
+                <button class="delete-btn" onclick="eliminarAlumno(${index})">Eliminar</button>
+            `;
+            listaAlumnosUL.appendChild(li);
+            });
+        }
+      }
+
+      window.editarAlumno = function(index) {
+        if (!claseActual || !alumnosPorClase[claseActual]) return;
+        const nuevoNombre = prompt("Editar nombre del alumno:", alumnosPorClase[claseActual][index]);
+        if (nuevoNombre !== null && nuevoNombre.trim() !== '') {
+          alumnosPorClase[claseActual][index] = nuevoNombre.trim();
+          mostrarAlumnosDeClase(claseActual);
+          actualizarSelectorClases();
+        }
+      }
+
+      window.eliminarAlumno = function(index) {
+        if (!claseActual || !alumnosPorClase[claseActual]) return;
+        if (confirm("¿Eliminar este alumno?")) {
+          alumnosPorClase[claseActual].splice(index, 1);
+          mostrarAlumnosDeClase(claseActual);
+          actualizarSelectorClases();
+        }
+      }
+
+      btnCrearClase.onclick = () => {
+        const nombreClase = nombreClaseInput.value.trim();
+        if (nombreClase && !alumnosPorClase[nombreClase]) {
+          alumnosPorClase[nombreClase] = [];
+          claseActual = nombreClase;
+          nombreClaseInput.value = '';
+          actualizarSelectorClases();
+        } else if (nombreClase && alumnosPorClase[nombreClase]) {
+            alert("Esa clase ya existe. Selecciona un nombre diferente.");
+        } else if (!nombreClase) {
+            alert("Por favor, introduce un nombre para la clase.");
+        }
+      };
+
+      seleccionarClaseSelect.onchange = function () {
+        claseActual = this.value;
+        mostrarAlumnosDeClase(claseActual);
+        resultadoSorteoDiv.textContent = ''; 
+        document.getElementById("resultadoGrupos").innerHTML = ""; 
+      };
+      
+      function agregarAlumno() {
+        const alumno = nuevoAlumnoInput.value.trim();
+        if (alumno && claseActual && alumnosPorClase[claseActual]) {
+          alumnosPorClase[claseActual].push(alumno);
+          nuevoAlumnoInput.value = ''; 
+          mostrarAlumnosDeClase(claseActual);
+          actualizarSelectorClases();
+        } else if (!claseActual) {
+            alert("Por favor, crea o selecciona una clase primero.");
+        } else if (!alumno) {
+            alert("Por favor, introduce el nombre del alumno.");
+        }
+        nuevoAlumnoInput.focus(); 
+      }
+
+      btnAgregarAlumno.onclick = agregarAlumno;
+
+      nuevoAlumnoInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault(); 
+          agregarAlumno();
+        }
       });
 
-      segundosInput.addEventListener('input', function() {
-          let value = parseInt(this.value);
-           if (isNaN(value) || value < 0) this.value = 0;
-          if (value > 59) this.value = 59;
-          this.value = String(this.value).padStart(2, '0');
-      });
+      btnGuardarClase.onclick = function () {
+        if (Object.keys(alumnosPorClase).length > 0) {
+            localStorage.setItem('alumnosPorClase', JSON.stringify(alumnosPorClase));
+            alert('Clases guardadas localmente.');
+        } else {
+            alert('No hay clases para guardar.');
+        }
+      };
 
+      btnCargarClase.onclick = function () {
+        const data = localStorage.getItem('alumnosPorClase');
+        if (data) {
+          for (const key in alumnosPorClase) {
+            delete alumnosPorClase[key];
+          }
+          Object.assign(alumnosPorClase, JSON.parse(data));
+          claseActual = ''; 
+          actualizarSelectorClases();
+          listaAlumnosUL.innerHTML = ''; 
+          resultadoSorteoDiv.textContent = '';
+          document.getElementById("resultadoGrupos").innerHTML = "";
+          alert('Clases cargadas.');
+        } else {
+            alert('No hay clases guardadas para cargar.');
+        }
+      };
 
-      // --- Inicializar la aplicación ---
-      init();
+      btnEliminarClase.onclick = function () {
+        if (claseActual && alumnosPorClase[claseActual] && confirm(`¿Deseas eliminar la clase "${claseActual}" con todos sus alumnos?`)) {
+          delete alumnosPorClase[claseActual];
+          claseActual = '';
+          actualizarSelectorClases();
+          listaAlumnosUL.innerHTML = '';
+          resultadoSorteoDiv.textContent = '';
+          document.getElementById("resultadoGrupos").innerHTML = "";
+           alert('Clase eliminada.');
+        } else if (!claseActual) {
+            alert('Por favor, selecciona una clase para eliminar.');
+        }
+      };
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+      btnCrearGrupos.onclick = function () {
+        if (claseActual && alumnosPorClase[claseActual] && alumnosPorClase[claseActual].length > 0) {
+          let alumnosParaGrupos = [...alumnosPorClase[claseActual]];
+          shuffleArray(alumnosParaGrupos);
+          const alumnosPorGrupo = parseInt(document.getElementById("cantidadAlumnos").value);
+          if (alumnosPorGrupo <= 0) {
+            alert("El número de alumnos por grupo debe ser mayor que cero.");
+            return;
+          }
+          const grupos = [];
+          for (let i = 0; i < alumnosParaGrupos.length; i += alumnosPorGrupo) {
+            grupos.push(alumnosParaGrupos.slice(i, i + alumnosPorGrupo));
+          }
+          mostrarGrupos(grupos);
+        } else {
+          alert("Asegúrate de seleccionar una clase con alumnos antes de crear los grupos.");
+        }
+      };
+
+      function mostrarGrupos(grupos) {
+        const resultadoGruposDiv = document.getElementById("resultadoGrupos");
+        resultadoGruposDiv.innerHTML = "";
+        if (grupos.length === 0) {
+            resultadoGruposDiv.textContent = "No hay suficientes alumnos para formar grupos con los criterios seleccionados.";
+            return;
+        }
+        grupos.forEach((grupo, index) => {
+          const divGrupo = document.createElement('div');
+          divGrupo.innerHTML = `<strong>Grupo ${index + 1}:</strong> ${grupo.join(', ')}`;
+          resultadoGruposDiv.appendChild(divGrupo);
+        });
+      }
+      
+      btnSortear.onclick = function() {
+        if (claseActual && alumnosPorClase[claseActual] && alumnosPorClase[claseActual].length > 0) {
+          const alumnosDeClase = alumnosPorClase[claseActual];
+          const indiceAleatorio = Math.floor(Math.random() * alumnosDeClase.length);
+          const alumnoSorteado = alumnosDeClase[indiceAleatorio];
+          resultadoSorteoDiv.textContent = `Alumno sorteado: ${alumnoSorteado}`;
+        } else {
+          alert("Por favor, selecciona una clase con alumnos para realizar el sorteo.");
+          resultadoSorteoDiv.textContent = '';
+        }
+      };
+
+      document.getElementById("btnMas").onclick = function() {
+        const cantidadAlumnosInput = document.getElementById("cantidadAlumnos");
+        if (parseInt(cantidadAlumnosInput.value) < 10) { 
+          cantidadAlumnosInput.value = parseInt(cantidadAlumnosInput.value) + 1;
+        }
+      };
+
+      document.getElementById("btnMenos").onclick = function() {
+        const cantidadAlumnosInput = document.getElementById("cantidadAlumnos");
+        if (parseInt(cantidadAlumnosInput.value) > 2) { 
+          cantidadAlumnosInput.value = parseInt(cantidadAlumnosInput.value) - 1;
+        }
+      };
+
+      const stored = localStorage.getItem('alumnosPorClase');
+      if (stored) {
+        Object.assign(alumnosPorClase, JSON.parse(stored));
+        actualizarSelectorClases();
+      }
     });
   </script>
 </body>
