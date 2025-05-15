@@ -75,7 +75,11 @@
         border: 1px solid #ddd;
         background-color: #f9f9f9;
         min-height: 30px;
+        text-align: left; /* Alineación a la izquierda para la lista de sorteados */
     }
+     .resultados div {
+        margin-bottom: 5px; /* Espacio entre los resultados de cada grupo */
+     }
   </style>
 </head>
 <body>
@@ -111,8 +115,7 @@
     </div>
 
     <h2>Sorteo</h2>
-    <button id="btnSortear">Sortear Alumno</button>
-    <div id="resultadoSorteo" class="resultados"></div>
+    <button id="btnSortear">Sortear Alumno/s</button> <div id="resultadoSorteo" class="resultados"></div>
   </div>
 
   <div class="temporizador-container container">
@@ -142,7 +145,7 @@
       const btnCrearGrupos = document.getElementById("btnCrearGrupos");
       const btnSortear = document.getElementById("btnSortear");
       const resultadoSorteoDiv = document.getElementById("resultadoSorteo");
-
+      const resultadoGruposDiv = document.getElementById("resultadoGrupos"); // Añadido
 
       const alumnosPorClase = {};
       let claseActual = '';
@@ -158,11 +161,7 @@
       const btnReiniciar = document.getElementById("btnReiniciar");
 
       // Alarma
-      // Intentemos con la URL original de Mixkit que suele ser más permisiva con el hotlinking
       const alarmaAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/988/988-preview.mp3');
-      // const alarmaAudio = new Audio('https://soundbible.com/mp3/Air%20Plane%20Ding-SoundBible.com-496729130.mp3');
-      
-      // Opcional: intentar precargar el audio
       alarmaAudio.preload = 'auto';
 
 
@@ -183,10 +182,6 @@
         btnParar.disabled = false;
         btnReiniciar.disabled = false;
 
-        // Opcional: cargar el audio aquí si no se precargó antes,
-        // para asegurar que la "interacción del usuario" está más cerca de la carga.
-        // alarmaAudio.load(); 
-
         temporizadorInterval = setInterval(function () {
           if (tiempoRestante > 0) {
             tiempoRestante--;
@@ -194,27 +189,22 @@
           } else {
             clearInterval(temporizadorInterval);
             temporizadorInterval = null;
-            
-            console.log("Intentando reproducir sonido de alarma..."); // Mensaje para depuración
+
+            console.log("Intentando reproducir sonido de alarma...");
             const playPromise = alarmaAudio.play();
 
             if (playPromise !== undefined) {
               playPromise.then(_ => {
-                // La reproducción automática comenzó bien
                 console.log("Sonido de alarma reproducido exitosamente.");
                 alert("El tiempo ha terminado.");
               }).catch(error => {
-                // La reproducción automática fue prevenida o falló.
                 console.error("Error al reproducir el sonido de la alarma:", error);
-                // Mostrar un mensaje al usuario que puede ser más útil.
                 alert("El tiempo ha terminado. (No se pudo reproducir el sonido de la alarma. Por favor, revisa los permisos de sonido de tu navegador para este sitio o la consola para más detalles.)");
               });
             } else {
-                // Fallback para navegadores muy antiguos que no devuelven una promesa de play()
-                // o si playPromise es undefined por alguna razón.
                 alert("El tiempo ha terminado. (Sonido no pudo iniciarse)");
             }
-            
+
             btnIniciar.disabled = false;
             btnParar.disabled = true;
           }
@@ -233,7 +223,7 @@
         temporizadorInterval = null;
         tiempoRestante = 0;
         minutosInput.value = "00";
-        segundosInput.value = "30"; 
+        segundosInput.value = "30";
         btnIniciar.disabled = false;
         btnParar.disabled = true;
         btnReiniciar.disabled = true;
@@ -244,7 +234,7 @@
         const defaultOption = document.createElement('option');
         defaultOption.textContent = 'Seleccionar Clase';
         defaultOption.disabled = true;
-        defaultOption.selected = !claseActual; 
+        defaultOption.selected = !claseActual;
         seleccionarClaseSelect.appendChild(defaultOption);
 
         for (const clase in alumnosPorClase) {
@@ -311,15 +301,15 @@
       seleccionarClaseSelect.onchange = function () {
         claseActual = this.value;
         mostrarAlumnosDeClase(claseActual);
-        resultadoSorteoDiv.textContent = ''; 
-        document.getElementById("resultadoGrupos").innerHTML = ""; 
+        resultadoSorteoDiv.textContent = '';
+        resultadoGruposDiv.innerHTML = ""; // Limpiar grupos al cambiar de clase
       };
-      
+
       function agregarAlumno() {
         const alumno = nuevoAlumnoInput.value.trim();
         if (alumno && claseActual && alumnosPorClase[claseActual]) {
           alumnosPorClase[claseActual].push(alumno);
-          nuevoAlumnoInput.value = ''; 
+          nuevoAlumnoInput.value = '';
           mostrarAlumnosDeClase(claseActual);
           actualizarSelectorClases();
         } else if (!claseActual) {
@@ -327,14 +317,14 @@
         } else if (!alumno) {
             alert("Por favor, introduce el nombre del alumno.");
         }
-        nuevoAlumnoInput.focus(); 
+        nuevoAlumnoInput.focus();
       }
 
       btnAgregarAlumno.onclick = agregarAlumno;
 
       nuevoAlumnoInput.addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
-          event.preventDefault(); 
+          event.preventDefault();
           agregarAlumno();
         }
       });
@@ -355,11 +345,11 @@
             delete alumnosPorClase[key];
           }
           Object.assign(alumnosPorClase, JSON.parse(data));
-          claseActual = ''; 
+          claseActual = '';
           actualizarSelectorClases();
-          listaAlumnosUL.innerHTML = ''; 
+          listaAlumnosUL.innerHTML = '';
           resultadoSorteoDiv.textContent = '';
-          document.getElementById("resultadoGrupos").innerHTML = "";
+          resultadoGruposDiv.innerHTML = "";
           alert('Clases cargadas.');
         } else {
             alert('No hay clases guardadas para cargar.');
@@ -373,7 +363,7 @@
           actualizarSelectorClases();
           listaAlumnosUL.innerHTML = '';
           resultadoSorteoDiv.textContent = '';
-          document.getElementById("resultadoGrupos").innerHTML = "";
+          resultadoGruposDiv.innerHTML = "";
            alert('Clase eliminada.');
         } else if (!claseActual) {
             alert('Por favor, selecciona una clase para eliminar.');
@@ -403,11 +393,11 @@
           mostrarGrupos(grupos);
         } else {
           alert("Asegúrate de seleccionar una clase con alumnos antes de crear los grupos.");
+           resultadoGruposDiv.innerHTML = ""; // Limpiar si no se pueden crear grupos
         }
       };
 
       function mostrarGrupos(grupos) {
-        const resultadoGruposDiv = document.getElementById("resultadoGrupos");
         resultadoGruposDiv.innerHTML = "";
         if (grupos.length === 0) {
             resultadoGruposDiv.textContent = "No hay suficientes alumnos para formar grupos con los criterios seleccionados.";
@@ -419,29 +409,69 @@
           resultadoGruposDiv.appendChild(divGrupo);
         });
       }
-      
+
       btnSortear.onclick = function() {
         if (claseActual && alumnosPorClase[claseActual] && alumnosPorClase[claseActual].length > 0) {
-          const alumnosDeClase = alumnosPorClase[claseActual];
-          const indiceAleatorio = Math.floor(Math.random() * alumnosDeClase.length);
-          const alumnoSorteado = alumnosDeClase[indiceAleatorio];
-          resultadoSorteoDiv.textContent = `Alumno sorteado: ${alumnoSorteado}`;
+          const gruposMostrados = resultadoGruposDiv.querySelectorAll('div'); // Obtener los divs de grupo mostrados
+          resultadoSorteoDiv.innerHTML = ''; // Limpiar resultados anteriores
+
+          if (gruposMostrados.length > 0) {
+            // Sorteo por grupo
+            const resultadosSorteoPorGrupo = [];
+            gruposMostrados.forEach(divGrupo => {
+                // Extraer los nombres de los alumnos del texto del div
+                const textoGrupo = divGrupo.textContent.replace(/Grupo \d+:\s*/, ''); // Eliminar el prefijo "Grupo X:"
+                const alumnosDelGrupo = textoGrupo.split(', ').map(alumno => alumno.trim());
+
+                if (alumnosDelGrupo.length > 0) {
+                    const indiceAleatorio = Math.floor(Math.random() * alumnosDelGrupo.length);
+                    const alumnoSorteado = alumnosDelGrupo[indiceAleatorio];
+                    resultadosSorteoPorGrupo.push(alumnoSorteado);
+                }
+            });
+
+            if (resultadosSorteoPorGrupo.length > 0) {
+                const titulo = document.createElement('strong');
+                titulo.textContent = 'Alumnos sorteados (uno por grupo):';
+                resultadoSorteoDiv.appendChild(titulo);
+
+                const listaSorteados = document.createElement('ul');
+                resultadosSorteoPorGrupo.forEach(alumno => {
+                    const li = document.createElement('li');
+                    li.textContent = alumno;
+                    listaSorteados.appendChild(li);
+                });
+                resultadoSorteoDiv.appendChild(listaSorteados);
+
+            } else {
+                 resultadoSorteoDiv.textContent = 'No se pudieron sortear alumnos de los grupos.';
+            }
+
+          } else {
+            // Comportamiento original: sortear uno de toda la clase si no hay grupos mostrados
+            const alumnosDeClase = alumnosPorClase[claseActual];
+            const indiceAleatorio = Math.floor(Math.random() * alumnosDeClase.length);
+            const alumnoSorteado = alumnosDeClase[indiceAleatorio];
+            resultadoSorteoDiv.textContent = `Alumno sorteado: ${alumnoSorteado}`;
+          }
+
         } else {
           alert("Por favor, selecciona una clase con alumnos para realizar el sorteo.");
           resultadoSorteoDiv.textContent = '';
         }
       };
 
+
       document.getElementById("btnMas").onclick = function() {
         const cantidadAlumnosInput = document.getElementById("cantidadAlumnos");
-        if (parseInt(cantidadAlumnosInput.value) < 10) { 
+        if (parseInt(cantidadAlumnosInput.value) < 10) {
           cantidadAlumnosInput.value = parseInt(cantidadAlumnosInput.value) + 1;
         }
       };
 
       document.getElementById("btnMenos").onclick = function() {
         const cantidadAlumnosInput = document.getElementById("cantidadAlumnos");
-        if (parseInt(cantidadAlumnosInput.value) > 2) { 
+        if (parseInt(cantidadAlumnosInput.value) > 2) {
           cantidadAlumnosInput.value = parseInt(cantidadAlumnosInput.value) - 1;
         }
       };
